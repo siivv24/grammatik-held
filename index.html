@@ -634,17 +634,30 @@ function showQ(){answered=false;const q=currentQuestions[currentIndex];updateDot
   else if(currentType==='sprachbausteine')renderFB(q);
   else renderTF(q);
 }
+// Store current question safely — fixes onclick special character issues
+let currentQ = null;
+
 function renderMC(q){
-  const opts=[['A',q.option_a],['B',q.option_b],['C',q.option_c],['D',q.option_d]];
+  currentQ = q;
   document.getElementById('ex-content').innerHTML=`
     <div class="q-card"><div class="q-tag">📖 Articles · ${q.level}</div>
     <div class="q-text">${(q.question||'').replace('___','<span class="q-blank">___</span>')}</div>
     <div class="q-hint">💡 ${q.topic||''}</div></div>
-    <div class="opts">${opts.map(([l,v])=>`<button class="opt-btn" onclick="checkMC(this,'${l}','${q.correct_answer}','${esc(q.explanation)}')"><span>${v||''}</span><span style="color:var(--muted);font-size:12px;font-weight:700">${l}</span></button>`).join('')}</div>
+    <div class="opts" id="opts"></div>
     <div class="fb-card" id="fb"></div>
     <button class="next-btn" id="nxt" onclick="nextQ()">Weiter →</button>`;
+  const opts=[['A',q.option_a||''],['B',q.option_b||''],['C',q.option_c||''],['D',q.option_d||'']];
+  const g=document.getElementById('opts');
+  opts.forEach(([l,v])=>{
+    const b=document.createElement('button');
+    b.className='opt-btn';
+    b.innerHTML='<span>'+v+'</span><span style="color:var(--muted);font-size:12px;font-weight:700">'+l+'</span>';
+    b.addEventListener('click',()=>checkMC(b,l));
+    g.appendChild(b);
+  });
 }
 function renderFB(q){
+  currentQ = q;
   document.getElementById('ex-content').innerHTML=`
     <div class="q-card"><div class="q-tag">✍️ Sprachbausteine · ${q.level}</div>
     <div class="q-text">${(q.sentence||'').replace('___','<span class="q-blank">___</span>')}</div>
@@ -656,44 +669,71 @@ function renderFB(q){
   const pool=shuf(['der','die','das','den','dem','einen','eine','ein','einer','einem','kein','keine','keinen'].filter(x=>x!==correct));
   const all=shuf([correct,...pool.slice(0,3)]);
   const g=document.getElementById('opts');
-  all.forEach(opt=>{const b=document.createElement('button');b.className='opt-btn';b.innerHTML='<span>'+opt+'</span>';b.onclick=()=>checkFB(b,opt,correct,q.explanation);g.appendChild(b);});
+  all.forEach(opt=>{
+    const b=document.createElement('button');
+    b.className='opt-btn';
+    b.innerHTML='<span>'+opt+'</span>';
+    b.addEventListener('click',()=>checkFB(b,opt));
+    g.appendChild(b);
+  });
 }
 function renderTF(q){
+  currentQ = q;
   document.getElementById('ex-content').innerHTML=`
     <div class="q-card"><div class="q-tag">✔️ True or False · ${q.level}</div>
     <div class="q-text" style="font-size:16px">${q.statement||''}</div>
     <div class="q-hint">💡 Is this correct?</div></div>
-    <div class="opts">
-      <button class="opt-btn" onclick="checkTF(this,'TRUE','${q.answer}','${esc(q.explanation)}')"><span>✅ TRUE — Richtig</span></button>
-      <button class="opt-btn" onclick="checkTF(this,'FALSE','${q.answer}','${esc(q.explanation)}')"><span>❌ FALSE — Falsch</span></button>
-    </div>
+    <div class="opts" id="opts"></div>
     <div class="fb-card" id="fb"></div>
     <button class="next-btn" id="nxt" onclick="nextQ()">Weiter →</button>`;
+  const g=document.getElementById('opts');
+  [['TRUE','✅ TRUE — Richtig'],['FALSE','❌ FALSE — Falsch']].forEach(([val,label])=>{
+    const b=document.createElement('button');
+    b.className='opt-btn';
+    b.innerHTML='<span>'+label+'</span>';
+    b.addEventListener('click',()=>checkTF(b,val));
+    g.appendChild(b);
+  });
 }
-function checkMC(btn,chosen,correct,explanation){
-  if(answered)return;answered=true;
+function checkMC(btn,chosen){
+  if(answered)return; answered=true;
+  const correct=currentQ.correct_answer;
+  const explanation=currentQ.explanation||'';
   document.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
   const ok=chosen===correct;
-  if(ok){btn.classList.add('correct');correctCount++;}else{btn.classList.add('wrong');}
+  if(ok){btn.classList.add('correct');correctCount++;}
+  else{
+    btn.classList.add('wrong');
+    const labels=['A','B','C','D'];
+    document.querySelectorAll('.opt-btn').forEach((b,i)=>{if(labels[i]===correct)b.classList.add('correct');});
+  }
   document.getElementById('mascot-say').textContent=rand(ok?SAYINGS.correct:SAYINGS.wrong);
   showFB(ok,ok?'Richtig! Wunderbar! 🎉':'Not quite!',explanation);
   document.getElementById('nxt').classList.add('show');
 }
-function checkFB(btn,chosen,correct,explanation){
-  if(answered)return;answered=true;
+function checkFB(btn,chosen){
+  if(answered)return; answered=true;
+  const correct=currentQ.correct_answer;
+  const explanation=currentQ.explanation||'';
   document.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
   const ok=chosen===correct;
   if(ok){btn.classList.add('correct');correctCount++;}
-  else{btn.classList.add('wrong');document.querySelectorAll('.opt-btn').forEach(b=>{if(b.querySelector('span').textContent===correct)b.classList.add('correct');});}
+  else{
+    btn.classList.add('wrong');
+    document.querySelectorAll('.opt-btn').forEach(b=>{if(b.querySelector('span').textContent===correct)b.classList.add('correct');});
+  }
   document.getElementById('mascot-say').textContent=rand(ok?SAYINGS.correct:SAYINGS.wrong);
   showFB(ok,ok?'Richtig! 🎉':'Answer: '+correct,explanation);
   document.getElementById('nxt').classList.add('show');
 }
-function checkTF(btn,chosen,correct,explanation){
-  if(answered)return;answered=true;
+function checkTF(btn,chosen){
+  if(answered)return; answered=true;
+  const correct=currentQ.answer;
+  const explanation=currentQ.explanation||'';
   document.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
   const ok=chosen===correct;
-  if(ok){btn.classList.add('correct');correctCount++;}else{btn.classList.add('wrong');}
+  if(ok){btn.classList.add('correct');correctCount++;}
+  else{btn.classList.add('wrong');}
   document.getElementById('mascot-say').textContent=rand(ok?SAYINGS.correct:SAYINGS.wrong);
   showFB(ok,ok?'Richtig! 🎉':'It is '+correct,explanation);
   document.getElementById('nxt').classList.add('show');
