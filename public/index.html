@@ -592,10 +592,22 @@ function showSplash(){
   const af=document.getElementById('auth-form-view');if(af)af.classList.remove('visible');
   const sp=document.getElementById('splash-view');if(sp)sp.style.display='flex';
 }
-function showAuthForm(tab){
-  document.getElementById('splash-view').style.display='none';
-  document.getElementById('auth-form-view').classList.add('visible');
+function showAuthForm(tab) {
+  var splashView = document.getElementById('splash-view');
+  var authView = document.getElementById('auth-form-view');
+
+  // Only hide the splash screen if it actually exists on this page
+  if (splashView) {
+    splashView.style.display = 'none';
+  }
+
+  // Only show the auth form if it actually exists on this page
+  if (authView) {
+    authView.classList.add('visible');
+  }
+
   switchTab(tab);
+}
 }
 function switchTab(t){
   document.getElementById('form-login').style.display=t==='login'?'block':'none';
