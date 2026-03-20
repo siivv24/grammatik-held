@@ -500,7 +500,7 @@ body{font-family:'Nunito Sans',sans-serif;background:#CBD5E1;color:var(--text);m
 <div class="page-header"><div class="back-btn" onclick="goTo('home')">←</div><div class="page-title">🗣️ Sprechen</div><div style="margin-left:auto;font-size:12px;color:var(--muted);font-weight:700" id="spr-lvl"></div></div>
 <div style="padding:0 18px 8px;font-size:13px;color:var(--muted);">Choose exam type and practice speaking topics</div>
 <div class="exam-row"><button class="exam-btn active" id="spr-g" onclick="switchExam('sprechen','goethe')">🎓 Goethe</button><button class="exam-btn" id="spr-t" onclick="switchExam('sprechen','telc')">📋 telc</button></div>
-<button class="surprise-btn" onclick="surpriseMe('sprechen')">🎲 Überrasch mich!</button>
+
 <div class="topic-list" id="sprechen-topics"></div>
 </div>
 <div class="screen" id="screen-schreiben">
@@ -508,7 +508,7 @@ body{font-family:'Nunito Sans',sans-serif;background:#CBD5E1;color:var(--text);m
 <div class="page-header"><div class="back-btn" onclick="goTo('home')">←</div><div class="page-title">✍️ Schreiben</div><div style="margin-left:auto;font-size:12px;color:var(--muted);font-weight:700" id="sch-lvl"></div></div>
 <div style="padding:0 18px 8px;font-size:13px;color:var(--muted);">Practice writing tasks from Goethe and telc exams</div>
 <div class="exam-row"><button class="exam-btn active" id="sch-g" onclick="switchExam('schreiben','goethe')">🎓 Goethe</button><button class="exam-btn" id="sch-t" onclick="switchExam('schreiben','telc')">📋 telc</button></div>
-<button class="surprise-btn" onclick="surpriseMe('schreiben')">🎲 Überrasch mich!</button>
+
 <div class="topic-list" id="schreiben-topics"></div>
 </div>
 <div class="screen" id="screen-topic-detail">
@@ -802,10 +802,11 @@ function switchExam(mod,exam){
 }
 function surpriseMe(mod){
   var exam=mod==='sprechen'?sprExam:schExam;
-  var data=mod==='sprechen'?SPRECHEN_DATA:SCHREIBEN_DATA;
-  var topics=(data[exam]||{})[level]||[];
-  if(!topics.length)return;
-  showTopic(mod,Math.floor(Math.random()*topics.length));
+  var table=mod==='sprechen'?'sprechen':'schreiben';
+  var cacheKey=table+'-'+exam+'-'+level;
+  var topics=sprTopicsCache[cacheKey]||[];
+  if(!topics.length){alert('Please wait for topics to load first!');return;}
+  showTopicFromDB(mod,Math.floor(Math.random()*topics.length));
 }
 var WOTDS=[
   {word:'die Nachhaltigkeit',en:'sustainability',ex:'Nachhaltigkeit ist wichtig für die Zukunft.',lv:'B1'},
@@ -1134,10 +1135,11 @@ function showEnhancedTopic(t, exam){
     });
   }
   
-  // Vocabulary
+  // Vocabulary - vocab is a pipe-separated string from Supabase
   if(t.vocab && t.vocab.length){
     html += '<div class="vocab-box"><h4>📚 Wichtiges Vokabular</h4>';
-    t.vocab.forEach(v=>{ html += '<div class="vocab-item">'+v+'</div>'; });
+    var vocabItems = typeof t.vocab === 'string' ? t.vocab.split('|') : t.vocab;
+    vocabItems.forEach(v=>{ if(v.trim()) html += '<div class="vocab-item">'+v.trim()+'</div>'; });
     html += '</div>';
   }
   
@@ -1161,7 +1163,7 @@ function renderTopicList(mod, topics){
   topics.forEach((t,i)=>{
     var div=document.createElement('div');
     div.className='topic-item';
-    div.innerHTML='<div class="topic-num">'+t.id+'</div><div class="topic-body"><h4>'+t.topic+'</h4>'+(t.tip?'<p>'+t.tip+'</p>':'')+'</div><div class="topic-arrow">›</div>';
+    div.innerHTML='<div class="topic-num">'+(i+1)+'</div><div class="topic-body"><h4>'+t.topic+'</h4>'+(t.tip?'<p>'+t.tip+'</p>':'')+'</div><div class="topic-arrow">›</div>';
     div.addEventListener('click',()=>showTopicFromDB(mod,i));
     el.appendChild(div);
   });
