@@ -1072,16 +1072,18 @@ function loadReview(){
 
 // ── DICTIONARY ────────────────────────────────────────────────
 function initDict(){if(!dictCache.length)loadDict();}
-async function loadDict(){   loading('dict-results','Loading dictionary...');   try{     const [b1,b2,b3]=await Promise.all([       sbFetch('/rest/v1/dictionary?select=*&order=id&offset=0&limit=1000'),       sbFetch('/rest/v1/dictionary?select=*&order=id&offset=1000&limit=1000'),       sbFetch('/rest/v1/dictionary?select=*&order=id&offset=2000&limit=1000'),     ]);     dictCache=[...b1,...b2,...b3];     document.getElementById('dict-results').innerHTML='<div class="dict-empty">🔍 Search any German word<br>or English translation<br><br><span style="font-size:28px">🇩🇪 ↔ 🇬🇧</span></div>';   }catch(e){errBox('dict-results','Could not load dictionary.');} }
+async function loadDict(){
   loading('dict-results','Loading dictionary...');
   try{
-   (async () => {
-  try {
-    dictCache = await sbFetch('/rest/v1/dictionary?select=*&limit=3000');
-    console.log("Dictionary loaded successfully!");
-    document.getElementById('dict-results').innerHTML = 
-      '<div class="dict-empty">🔍 Search any German word<br>or English translation<br><br><span style="font-size:28px">🇩🇪 ↔ 🇬🇧</span></div>';
-  } catch (error) {
+    const [b1,b2,b3]=await Promise.all([
+      sbFetch('/rest/v1/dictionary?select=*&order=id&offset=0&limit=1000'),
+      sbFetch('/rest/v1/dictionary?select=*&order=id&offset=1000&limit=1000'),
+      sbFetch('/rest/v1/dictionary?select=*&order=id&offset=2000&limit=1000'),
+    ]);
+    dictCache=[...b1,...b2,...b3];
+    document.getElementById('dict-results').innerHTML='<div class="dict-empty">🔍 Search any German word<br>or English translation<br><br><span style="font-size:28px">🇩🇪 ↔ 🇬🇧</span></div>';
+  }catch(e){errBox('dict-results','Could not load dictionary.');}
+}
     console.error("Failed to load dictionary:", error);
   var resultsBox = document.getElementById('dict-results');
     if (resultsBox) {
