@@ -314,7 +314,7 @@ body{font-family:'Nunito Sans',sans-serif;background:#2d1b69;color:var(--text);m
 <!-- LOGIN -->
 <div class="screen active" id="screen-login">
 <div class="status-bar"><span>9:41</span><span>●●●</span></div>
-<div class="login-hero">
+<div class="login-hero" id="splash-view">
   <div class="anim-stage">
     <div class="fox-runner">🦊</div>
     <div class="letters-wrap">
@@ -1074,33 +1074,25 @@ function loadReview(){
 function initDict(){if(!dictCache.length)loadDict();}
 async function loadDict(){
   loading('dict-results','Loading dictionary...');
-  try {
-        const resultsBox = document.getElementById('dict-results');
-        
-        if (!m || m.length === 0) {
-            resultsBox.innerHTML = '<div class="dict-empty">🔍 No results found.</div>';
-            return;
-        }
-
-        resultsBox.innerHTML = m.map(d => `
-            <div class="dict-item">
-                <strong>${d.word}</strong> (${d.type})<br>
-                <span>${d.translation}</span>
-            </div>
-        `).join('');
-
-    } catch (error) {
-        console.error("Failed to load dictionary:", error);
-        const resultsBox = document.getElementById('dict-results');
-        if (resultsBox) {
-            resultsBox.innerHTML = 'Could not load dictionary.';
-        }
-    }
+  try{
+    const [b1,b2,b3]=await Promise.all([
+      sbFetch('/rest/v1/dictionary?select=*&order=id&offset=0&limit=1000'),
+      sbFetch('/rest/v1/dictionary?select=*&order=id&offset=1000&limit=1000'),
+      sbFetch('/rest/v1/dictionary?select=*&order=id&offset=2000&limit=1000'),
+    ]);
+    dictCache=[...b1,...b2,...b3];
+    document.getElementById('dict-results').innerHTML='<div class="dict-empty">🔍 Search any German word<br>or English translation<br><br><span style="font-size:28px">🇩🇪 ↔ 🇬🇧</span></div>';
+  }catch(e){errBox('dict-results','Could not load dictionary.');}
 }
-function norm(s) {
-  return (s || '').toLowerCase().replace(/ä/g,'a').replace(/ö/g,'o').replace(/ü/g,'u').replace(/ß/g,'ss');
-}
- const resultsBox = document.getElementById('dict-results');     if (resultsBox && m) {
+
+function searchDict(q){
+  const res=document.getElementById('dict-results');
+  if(!q.trim()){res.innerHTML='<div class="dict-empty">🔍 Search any German word<br>or English translation<br><br><span style="font-size:28px">🇩🇪 ↔ 🇬🇧</span></div>';return;}
+  function norm(s){return (s||'').toLowerCase().replace(/ä/g,'a').replace(/ö/g,'o').replace(/ü/g,'u').replace(/ß/g,'ss');}
+  const ql=norm(q);
+  const m=dictCache.filter(d=>norm(d.word).includes(ql)||norm(d.english||'').includes(ql)||(d.article||'').toLowerCase()===ql.trim()).slice(0,30);
+  if(!m.length){res.innerHTML='<div class="dict-empty">No results for "'+q+'"</div>';return;}
+  res.innerHTML=m.map(d=>
     '<div class="dict-item">'
     +'<div class="dict-word-row"><span class="dict-art art-'+d.article+'">'+d.article+'</span><span class="dict-word">'+d.word+'</span></div>'
     +(d.english?'<div class="dict-eng">🇬🇧 '+d.english+'</div>':'')
@@ -1109,7 +1101,8 @@ function norm(s) {
     +(d.category?'<span class="dict-tag">'+d.category+'</span>':'')
     +(d.plural?'<span class="dict-tag">Pl: '+d.plural+'</span>':'')
     +'</div></div>'
-  .join('');
+  ).join('');
+}
 
 
 // ── INIT ──────────────────────────────────────────────────────
