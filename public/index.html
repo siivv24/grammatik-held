@@ -1081,6 +1081,7 @@ async function loadDict(){   loading('dict-results','Loading dictionary...');   
     dictCache = await sbFetch('/rest/v1/dictionary?select=*&limit=3000');
   } catch (e) {
     console.error("Load failed", e);
+    errBox('dict-results', 'Could not load dictionary.');
   }
 })(); 
   function norm(s){return (s||'').toLowerCase().replace(/ä/g,'a').replace(/ö/g,'o').replace(/ü/g,'u').replace(/ß/g,'ss');}
