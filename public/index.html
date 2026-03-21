@@ -305,6 +305,55 @@ body{font-family:'Nunito Sans',sans-serif;background:#2d1b69;color:var(--text);m
 .prog-ring-txt{font-family:'Nunito',sans-serif;font-size:24px;font-weight:900;color:var(--text);text-align:center;}
 .prog-ring-lbl{font-size:11px;color:var(--muted);font-weight:700;}
 @keyframes foxBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* ── FLASHCARD ── */
+#screen-flashcard{padding-bottom:100px;}
+.fc-header{background:linear-gradient(135deg,var(--navy),var(--pu));padding:44px 20px 24px;position:relative;overflow:hidden;margin-bottom:0;}
+.fc-header::after{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,0.06);}
+.fc-header h2{font-family:'Nunito',sans-serif;font-weight:900;font-size:22px;color:white;position:relative;z-index:2;}
+.fc-header p{font-size:13px;color:rgba(255,255,255,0.75);margin-top:4px;position:relative;z-index:2;}
+.fc-filter-row{display:flex;gap:8px;padding:14px 18px;overflow-x:auto;scrollbar-width:none;}
+.fc-filter-row::-webkit-scrollbar{display:none;}
+.fc-filter{padding:8px 16px;border-radius:99px;border:1.5px solid var(--border);background:white;font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;cursor:pointer;white-space:nowrap;transition:all 0.2s;color:var(--muted);}
+.fc-filter.active{background:var(--pu);color:white;border-color:var(--pu);}
+.fc-progress{padding:0 18px 12px;display:flex;align-items:center;gap:10px;}
+.fc-prog-bar{flex:1;height:8px;background:var(--pu-mid);border-radius:99px;overflow:hidden;}
+.fc-prog-fill{height:100%;background:linear-gradient(90deg,var(--pu),var(--blue));border-radius:99px;transition:width 0.4s ease;}
+.fc-prog-txt{font-size:12px;font-weight:800;color:var(--pu);min-width:40px;text-align:right;}
+/* Card 3D flip */
+.fc-scene{width:calc(100% - 36px);height:220px;margin:0 18px 16px;perspective:1000px;cursor:pointer;}
+.fc-card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.55s cubic-bezier(0.34,1.1,0.64,1);}
+.fc-card.flipped{transform:rotateY(180deg);}
+.fc-face{position:absolute;inset:0;border-radius:24px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;box-shadow:0 8px 32px rgba(108,60,225,0.18);}
+.fc-front{background:linear-gradient(145deg,var(--navy),var(--pu));color:white;}
+.fc-back{background:white;border:2px solid var(--border);transform:rotateY(180deg);}
+.fc-type-badge{background:rgba(255,255,255,0.18);color:white;border-radius:99px;padding:4px 14px;font-size:11px;font-weight:800;font-family:'Nunito',sans-serif;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;}
+.fc-word{font-family:'Nunito',sans-serif;font-size:36px;font-weight:900;color:white;text-align:center;margin-bottom:6px;}
+.fc-article{font-size:14px;color:rgba(255,255,255,0.7);font-weight:700;margin-bottom:4px;}
+.fc-level{background:rgba(255,255,255,0.15);border-radius:8px;padding:3px 10px;font-size:11px;font-weight:800;color:rgba(255,255,255,0.9);}
+.fc-tap{font-size:12px;color:rgba(255,255,255,0.5);margin-top:14px;font-weight:600;}
+/* Back face */
+.fc-english{font-family:'Nunito',sans-serif;font-size:26px;font-weight:900;color:var(--text);margin-bottom:10px;text-align:center;}
+.fc-example{background:var(--pu-light);border-radius:12px;padding:10px 14px;width:100%;text-align:center;}
+.fc-example-de{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:3px;}
+.fc-example-en{font-size:12px;color:var(--muted);}
+.fc-extra{font-size:12px;color:var(--pu);font-weight:700;margin-top:10px;text-align:center;}
+/* Action buttons */
+.fc-actions{display:flex;gap:10px;padding:0 18px;margin-bottom:16px;}
+.fc-btn{flex:1;padding:14px;border-radius:16px;border:none;font-family:'Nunito',sans-serif;font-weight:900;font-size:15px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.fc-btn-wrong{background:#FEF2F2;color:#B91C1C;border:2px solid #FECACA;}
+.fc-btn-right{background:#F0FDF4;color:#15803D;border:2px solid #BBF7D0;}
+.fc-btn-wrong:hover{background:#FECACA;}
+.fc-btn-right:hover{background:#BBF7D0;}
+/* Stats row */
+.fc-stats{display:flex;gap:10px;padding:0 18px 16px;}
+.fc-stat{flex:1;background:white;border:1.5px solid var(--border);border-radius:14px;padding:12px;text-align:center;box-shadow:var(--shadow);}
+.fc-stat-val{font-family:'Nunito',sans-serif;font-size:22px;font-weight:900;}
+.fc-stat-lbl{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-top:2px;}
+/* Completion screen */
+.fc-complete{text-align:center;padding:30px 24px;}
+.fc-complete-emoji{font-size:80px;margin-bottom:16px;animation:bounce 0.6s ease;}
+
 </style>
 </head>
 <body>
@@ -520,11 +569,81 @@ body{font-family:'Nunito Sans',sans-serif;background:#2d1b69;color:var(--text);m
   <div id="wotd-content" style="padding:0 18px"></div>
 </div>
 
+
+<!-- FLASHCARD -->
+<div class="screen" id="screen-flashcard">
+  <div class="status-bar" style="position:absolute;top:0;left:0;right:0;background:transparent;z-index:10"><span style="color:rgba(255,255,255,0.8)">9:41</span><span style="color:rgba(255,255,255,0.8)">●●●</span></div>
+  <div class="fc-header">
+    <div style="display:flex;align-items:center;gap:12px;position:relative;z-index:2">
+      <div class="back-btn" style="background:rgba(255,255,255,0.15);border-color:transparent;color:white" onclick="goTo('home')">←</div>
+      <div>
+        <h2>🃏 Flashcards</h2>
+        <p id="fc-subtitle">Tap card to flip · Swipe to next</p>
+      </div>
+    </div>
+  </div>
+  <!-- Filter tabs -->
+  <div class="fc-filter-row" id="fc-filters">
+    <div class="fc-filter active" onclick="setFcFilter('all')">🌟 All</div>
+    <div class="fc-filter" onclick="setFcFilter('noun')">📦 Nouns</div>
+    <div class="fc-filter" onclick="setFcFilter('verb')">⚡ Verbs</div>
+    <div class="fc-filter" onclick="setFcFilter('connector')">🔗 Connectors</div>
+    <div class="fc-filter" onclick="setFcFilter('filler')">💬 Fillers</div>
+    <div class="fc-filter" onclick="setFcFilter('adjective')">🎨 Adjectives</div>
+  </div>
+  <!-- Progress -->
+  <div class="fc-progress">
+    <div class="fc-prog-bar"><div class="fc-prog-fill" id="fc-prog-fill" style="width:0%"></div></div>
+    <div class="fc-prog-txt" id="fc-prog-txt">0/0</div>
+  </div>
+  <!-- Stats -->
+  <div class="fc-stats">
+    <div class="fc-stat"><div class="fc-stat-val" id="fc-seen" style="color:var(--pu)">0</div><div class="fc-stat-lbl">Seen</div></div>
+    <div class="fc-stat"><div class="fc-stat-val" id="fc-known" style="color:#22C55E">0</div><div class="fc-stat-lbl">Known ✅</div></div>
+    <div class="fc-stat"><div class="fc-stat-val" id="fc-learning" style="color:#F59E0B">0</div><div class="fc-stat-lbl">Learning 🔄</div></div>
+  </div>
+  <!-- Card -->
+  <div class="fc-scene" onclick="flipCard()">
+    <div class="fc-card" id="fc-card">
+      <div class="fc-face fc-front">
+        <div class="fc-type-badge" id="fc-type">verb</div>
+        <div class="fc-article" id="fc-article"></div>
+        <div class="fc-word" id="fc-word">Loading...</div>
+        <div class="fc-level" id="fc-lvl">A1</div>
+        <div class="fc-tap">👆 Tap to reveal</div>
+      </div>
+      <div class="fc-face fc-back">
+        <div class="fc-english" id="fc-english">translation</div>
+        <div class="fc-example" id="fc-example">
+          <div class="fc-example-de" id="fc-ex-de">example</div>
+          <div class="fc-example-en" id="fc-ex-en">translation</div>
+        </div>
+        <div class="fc-extra" id="fc-extra"></div>
+      </div>
+    </div>
+  </div>
+  <!-- Action buttons (show after flip) -->
+  <div class="fc-actions" id="fc-actions" style="opacity:0;pointer-events:none;transition:opacity 0.3s">
+    <button class="fc-btn fc-btn-wrong" onclick="fcAnswer(false)">❌ Still learning</button>
+    <button class="fc-btn fc-btn-right" onclick="fcAnswer(true)">✅ Got it!</button>
+  </div>
+  <!-- Completion -->
+  <div id="fc-complete" style="display:none">
+    <div class="fc-complete">
+      <div class="fc-complete-emoji">🎉</div>
+      <div style="font-family:Nunito,sans-serif;font-size:24px;font-weight:900;color:var(--text);margin-bottom:8px">Round Complete!</div>
+      <div style="font-size:14px;color:var(--muted);margin-bottom:24px" id="fc-complete-sub">Great job!</div>
+      <button class="btn-primary" onclick="startFlashcards()">🔄 Go Again</button>
+      <button class="btn-primary" style="margin-top:10px;background:white;color:var(--pu);border:2px solid var(--pu);box-shadow:none" onclick="goTo('home')">🏠 Back to Home</button>
+    </div>
+  </div>
+</div>
+
 <!-- BOTTOM NAV -->
 <div id="bottom-nav">
   <div class="nav-item active" id="nav-home" onclick="navTo('home')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div><div class="nav-dot"></div></div>
   <div class="nav-item" id="nav-dictionary" onclick="navTo('dictionary')"><div class="nav-icon">🔍</div><div class="nav-label">Dictionary</div><div class="nav-dot"></div></div>
-  <div class="nav-item" id="nav-translator" onclick="navTo('translator')"><div class="nav-icon">🌐</div><div class="nav-label">Translate</div><div class="nav-dot"></div></div>
+  <div class="nav-item" id="nav-flashcard" onclick="navTo('flashcard')"><div class="nav-icon">🃏</div><div class="nav-label">Flashcards</div><div class="nav-dot"></div></div>
   <div class="nav-item" id="nav-review" onclick="navTo('review')"><div class="nav-icon">📊</div><div class="nav-label">Review</div><div class="nav-dot"></div></div>
 </div>
 </div>
@@ -533,7 +652,7 @@ body{font-family:'Nunito Sans',sans-serif;background:#2d1b69;color:var(--text);m
 const SB_URL='https://aojtozjudqtpxebfxfyy.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFvanRvemp1ZHF0cHhlYmZ4Znl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3MjA2MTAsImV4cCI6MjA4OTI5NjYxMH0.uYNP3eO4PoG5qqHnWrycuKa-UpkDWbbdpg3OWrlWrr8';
 const SB_AUTH=SB_URL+'/auth/v1';
-const NAV=['home','dictionary','translator','review'];
+const NAV=['home','dictionary','flashcard','review'];
 
 // ── STATE ─────────────────────────────────────────────────────
 var user=null, userName='Held', level=localStorage.getItem('gh_level')||'A1';
@@ -585,6 +704,7 @@ function navTo(id){
   if(id==='home') loadHome();
   if(id==='dictionary') initDict();
   if(id==='review') loadReview();
+  if(id==='flashcard') initFlashcards();
 }
 
 // ── AUTH ──────────────────────────────────────────────────────
@@ -1104,6 +1224,114 @@ function searchDict(q){
   ).join('');
 }
 
+
+
+// ── FLASHCARD ──────────────────────────────────────────────
+var fcDeck=[], fcIndex=0, fcKnown=0, fcLearning=0, fcSeen=0;
+var fcFlipped=false, fcFilter='all', fcCache=[];
+
+async function initFlashcards(){
+  if(!fcCache.length){
+    try{
+      // Load vocab table + nouns from dictionary
+      const [vocab, nouns] = await Promise.all([
+        sbFetch('/rest/v1/vocab?select=*&level=eq.'+level+'&order=id'),
+        sbFetch('/rest/v1/dictionary?select=*&level=eq.'+level+'&limit=200&order=id')
+      ]);
+      // Normalise nouns to same shape
+      const nounCards = nouns.map(d=>({
+        word: d.word, type:'noun', article:d.article||'',
+        plural:d.plural||'', english:d.english||'',
+        example_de:d.example_sentence||'', example_en:'',
+        level:d.level, extra_meanings:''
+      }));
+      fcCache=[...vocab,...nounCards];
+    }catch(e){fcCache=[];}
+  }
+  startFlashcards();
+}
+
+function setFcFilter(f){
+  fcFilter=f;
+  document.querySelectorAll('.fc-filter').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  startFlashcards();
+}
+
+function startFlashcards(){
+  // Filter by type and shuffle
+  let cards = fcCache.filter(c=>fcFilter==='all'||c.type===fcFilter);
+  // Shuffle
+  for(let i=cards.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[cards[i],cards[j]]=[cards[j],cards[i]];}
+  fcDeck=cards;
+  fcIndex=0;fcKnown=0;fcLearning=0;fcSeen=0;fcFlipped=false;
+  document.getElementById('fc-complete').style.display='none';
+  document.querySelector('.fc-scene').style.display='block';
+  document.getElementById('fc-actions').style.display='flex';
+  if(fcDeck.length) showFcCard();
+  else document.getElementById('fc-word').textContent='No cards for this filter!';
+}
+
+function showFcCard(){
+  if(fcIndex>=fcDeck.length){showFcComplete();return;}
+  const c=fcDeck[fcIndex];
+  // Reset flip
+  fcFlipped=false;
+  const card=document.getElementById('fc-card');
+  card.classList.remove('flipped');
+  // Hide actions
+  const actions=document.getElementById('fc-actions');
+  actions.style.opacity='0';
+  actions.style.pointerEvents='none';
+  // Fill front
+  document.getElementById('fc-type').textContent=c.type.toUpperCase();
+  document.getElementById('fc-article').textContent=c.article?(c.article+' '):'';
+  document.getElementById('fc-word').textContent=c.word;
+  document.getElementById('fc-lvl').textContent=c.level||level;
+  // Fill back
+  document.getElementById('fc-english').textContent=c.english||'';
+  document.getElementById('fc-ex-de').textContent=c.example_de||'';
+  document.getElementById('fc-ex-en').textContent=c.example_en||'';
+  document.getElementById('fc-extra').textContent=c.extra_meanings?'💡 Also: '+c.extra_meanings:'';
+  // Update progress
+  const pct=Math.round((fcIndex/fcDeck.length)*100);
+  document.getElementById('fc-prog-fill').style.width=pct+'%';
+  document.getElementById('fc-prog-txt').textContent=fcIndex+'/'+fcDeck.length;
+  document.getElementById('fc-seen').textContent=fcSeen;
+  document.getElementById('fc-known').textContent=fcKnown;
+  document.getElementById('fc-learning').textContent=fcLearning;
+}
+
+function flipCard(){
+  if(fcFlipped) return;
+  fcFlipped=true;
+  fcSeen++;
+  document.getElementById('fc-card').classList.add('flipped');
+  // Show action buttons after flip
+  setTimeout(()=>{
+    const a=document.getElementById('fc-actions');
+    a.style.opacity='1';a.style.pointerEvents='all';
+  },400);
+}
+
+function fcAnswer(known){
+  if(known){fcKnown++;}
+  else{fcLearning++;fcDeck.push(fcDeck[fcIndex]);}  // push back for review
+  fcIndex++;
+  setTimeout(()=>showFcCard(),200);
+}
+
+function showFcComplete(){
+  document.querySelector('.fc-scene').style.display='none';
+  document.getElementById('fc-actions').style.display='none';
+  document.getElementById('fc-complete').style.display='block';
+  const total=fcKnown+fcLearning;
+  const pct=total>0?Math.round((fcKnown/total)*100):0;
+  document.getElementById('fc-complete-sub').textContent=
+    '✅ Known: '+fcKnown+' · 🔄 Learning: '+fcLearning+' · '+pct+'% mastered!';
+  document.getElementById('fc-prog-fill').style.width='100%';
+  document.getElementById('fc-prog-txt').textContent='Done!';
+}
 
 // ── INIT ──────────────────────────────────────────────────────
 // Load avatar into all img slots from first occurrence
