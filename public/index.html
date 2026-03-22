@@ -30,6 +30,8 @@ body{font-family:'Nunito Sans',sans-serif;background:#2d1b69;color:var(--text);m
 .nav-icon{font-size:22px;}
 .nav-label{font-size:10px;font-weight:800;color:var(--muted);font-family:'Nunito',sans-serif;}
 .nav-item.active .nav-label{color:var(--pu);}
+.nav-item svg{color:var(--muted);transition:color 0.2s;}
+.nav-item.active svg{color:var(--pu);}
 .nav-dot{width:4px;height:4px;border-radius:50%;background:transparent;margin-top:1px;}
 .nav-item.active .nav-dot{background:var(--pu);}
 /* SHARED */
@@ -354,6 +356,41 @@ body{font-family:'Nunito Sans',sans-serif;background:#2d1b69;color:var(--text);m
 .fc-complete{text-align:center;padding:30px 24px;}
 .fc-complete-emoji{font-size:80px;margin-bottom:16px;animation:bounce 0.6s ease;}
 
+
+/* ── PROFILE ── */
+#screen-profile{padding-bottom:100px;}
+.prof-top{background:linear-gradient(135deg,var(--navy),var(--pu));padding:50px 20px 30px;text-align:center;position:relative;overflow:hidden;}
+.prof-top::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,0.06);}
+.prof-avatar-wrap{position:relative;display:inline-block;margin-bottom:12px;}
+.prof-avatar{width:84px;height:84px;border-radius:50%;border:3px solid rgba(255,255,255,0.4);object-fit:cover;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:36px;cursor:pointer;}
+.prof-avatar-edit{position:absolute;bottom:0;right:0;width:26px;height:26px;background:var(--blue);border-radius:50%;border:2px solid white;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;}
+.prof-name{font-family:'Nunito',sans-serif;font-weight:900;font-size:22px;color:white;margin-bottom:4px;}
+.prof-level{background:rgba(255,255,255,0.2);border-radius:99px;padding:4px 14px;font-size:12px;font-weight:800;color:white;display:inline-block;}
+.prof-stats{display:flex;gap:10px;padding:16px 18px;}
+.prof-stat{flex:1;background:white;border:1.5px solid var(--border);border-radius:16px;padding:14px 8px;text-align:center;box-shadow:var(--shadow);}
+.prof-stat-val{font-family:'Nunito',sans-serif;font-size:22px;font-weight:900;}
+.prof-stat-lbl{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-top:2px;}
+.prof-section{padding:0 18px 14px;}
+.prof-sec-title{font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.prof-avatar-opts{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+.avatar-opt{width:52px;height:52px;border-radius:50%;background:var(--pu-mid);display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;border:2px solid transparent;transition:all 0.2s;}
+.avatar-opt.sel{border-color:var(--pu);transform:scale(1.1);}
+/* Review inside profile */
+.rev-card{background:white;border:1.5px solid var(--border);border-radius:16px;padding:14px 16px;margin-bottom:8px;box-shadow:var(--shadow);}
+.rev-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.rev-card-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:var(--text);}
+.str-dots{display:flex;gap:3px;}
+.str-dot{width:8px;height:8px;border-radius:50%;background:var(--border);}
+.str-dot.ok{background:var(--green);}
+.str-dot.bad{background:var(--red);}
+.rev-card-sub{font-size:12px;color:var(--muted);}
+.redo-btn{background:var(--pu-mid);color:var(--pu);border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;}
+.empty-rev{text-align:center;padding:20px;color:var(--muted);font-size:13px;font-weight:700;}
+.prog-ring{position:relative;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;width:120px;height:120px;}
+.prog-ring svg{position:absolute;top:0;left:0;}
+.prog-ring-txt{font-family:'Nunito',sans-serif;font-size:24px;font-weight:900;color:var(--text);text-align:center;}
+.prog-ring-lbl{font-size:11px;color:var(--muted);font-weight:700;}
+
 </style>
 </head>
 <body>
@@ -439,13 +476,16 @@ body{font-family:'Nunito Sans',sans-serif;background:#2d1b69;color:var(--text);m
     <div class="home-top">
       <div class="home-topbar" style="position:relative;z-index:2">
         <div class="home-greet"><p id="home-greeting">Guten Tag 👋</p><h2 id="home-username">Held</h2></div>
-        <div class="home-avatar" onclick="goTo('levelselect')">🦊</div>
+        <div class="home-avatar" onclick="navTo('profile')" id="home-avatar-emoji">🦊</div>
       </div>
       <div class="streak-pill" style="position:relative;z-index:2">
-        <span>🔥</span><span>12 Tage Streak!</span>
-        <span class="xp-mini">680/1000 XP</span>
-        <span style="margin-left:4px;background:rgba(255,255,255,0.2);color:white;border-radius:8px;padding:2px 8px;font-size:11px;font-weight:800" id="home-level-badge">A1</span>
+        <span>🔥</span><span id="streak-count">0 Tage Streak!</span>
+        <span style="margin-left:auto;background:rgba(255,255,255,0.2);color:white;border-radius:8px;padding:2px 8px;font-size:11px;font-weight:800" id="home-level-badge">A1</span>
       </div>
+      <div style="position:relative;z-index:2;margin-top:10px;background:rgba(255,255,255,0.1);border-radius:99px;height:10px;overflow:hidden">
+        <div id="xp-bar-fill" style="height:100%;background:linear-gradient(90deg,#FFD700,#FF8C00);border-radius:99px;width:0%;transition:width 0.6s ease"></div>
+      </div>
+      <div style="position:relative;z-index:2;text-align:right;font-size:11px;color:rgba(255,255,255,0.7);font-weight:700;margin-top:4px" id="xp-bar-txt">0/1000 XP</div>
     </div>
     <div class="sec-title" style="margin-top:14px">Daily Missions 🎯</div>
     <div class="mission-list">
@@ -458,8 +498,13 @@ body{font-family:'Nunito Sans',sans-serif;background:#2d1b69;color:var(--text);m
       <div class="module-big" onclick="goTo('sprechen')"><div class="m-icon">🗣️</div><div class="m-name">Sprechen</div><div class="m-desc">Goethe & telc topics</div><div class="m-tag">Goethe · telc</div></div>
       <div class="module-big" onclick="goTo('schreiben')"><div class="m-icon">✍️</div><div class="m-name">Schreiben</div><div class="m-desc">Writing prompts</div><div class="m-tag">Goethe · telc</div></div>
     </div>
-    <div class="sec-title">Grammatik 📖</div>
-    <div class="grammar-section"><div class="grammar-intro" id="grammar-intro">Grammar topics for your level.</div><div class="grammar-list" id="grammar-list"><div class="loading-box" style="height:120px"><div class="spinner"></div></div></div></div>
+    <div style="padding:0 18px 16px">
+      <div class="module-big" style="display:flex;align-items:center;gap:14px;padding:16px" onclick="goTo('grammar')">
+        <div style="font-size:36px">📖</div>
+        <div style="flex:1"><div class="m-name">Grammatik</div><div class="m-desc" id="grammar-intro">Grammar topics for your level</div></div>
+        <div style="color:var(--muted);font-size:20px">›</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -515,6 +560,20 @@ body{font-family:'Nunito Sans',sans-serif;background:#2d1b69;color:var(--text);m
   <div class="status-bar"><span>9:41</span><span>●●●</span></div>
   <div class="page-header"><div class="back-btn" id="topic-back">←</div><div class="page-title" id="topic-title">Topic</div></div>
   <div id="topic-content"></div>
+</div>
+
+
+<!-- GRAMMAR SCREEN -->
+<div class="screen" id="screen-grammar">
+  <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+  <div class="page-header">
+    <div class="back-btn" onclick="goTo('home')">←</div>
+    <div class="page-title">📖 Grammatik</div>
+  </div>
+  <div style="padding:0 18px 8px;font-size:13px;color:var(--muted)" id="grammar-intro-screen">Grammar topics for your level.</div>
+  <div class="grammar-list" id="grammar-list" style="padding:0 18px">
+    <div class="loading-box" style="height:120px"><div class="spinner"></div></div>
+  </div>
 </div>
 
 <!-- GRAMMAR DETAIL -->
@@ -631,20 +690,101 @@ body{font-family:'Nunito Sans',sans-serif;background:#2d1b69;color:var(--text);m
   <div id="fc-complete" style="display:none">
     <div class="fc-complete">
       <div class="fc-complete-emoji">🎉</div>
-      <div style="font-family:Nunito,sans-serif;font-size:24px;font-weight:900;color:var(--text);margin-bottom:8px">Round Complete!</div>
+      <div style="font-family:Nunito,sans-serif;font-size:24px;font-weight:900;color:var(--text);margin-bottom:8px">Round Complete! 🎉</div>
       <div style="font-size:14px;color:var(--muted);margin-bottom:24px" id="fc-complete-sub">Great job!</div>
-      <button class="btn-primary" onclick="startFlashcards()">🔄 Go Again</button>
+      <div style="background:var(--pu-light);border-radius:12px;padding:10px;margin-bottom:16px;font-size:13px;color:var(--pu);font-weight:800">+50 XP earned!</div>
+      <button class="btn-primary" id="fc-next-btn" style="margin-bottom:10px">➡️ Next 10 Cards</button>
+      <button class="btn-primary" onclick="startFlashcards(0)">🔄 Restart Round</button>
       <button class="btn-primary" style="margin-top:10px;background:white;color:var(--pu);border:2px solid var(--pu);box-shadow:none" onclick="goTo('home')">🏠 Back to Home</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- PROFILE -->
+<div class="screen" id="screen-profile">
+  <div class="status-bar" style="position:absolute;top:0;left:0;right:0;background:transparent;z-index:10"><span style="color:rgba(255,255,255,0.8)">9:41</span><span style="color:rgba(255,255,255,0.8)">●●●</span></div>
+  <!-- Top -->
+  <div class="prof-top">
+    <div class="prof-avatar-wrap">
+      <div class="prof-avatar" id="prof-avatar-display" onclick="document.getElementById('prof-photo-input').click()">🦊</div>
+      <div class="prof-avatar-edit">✏️</div>
+      <input type="file" id="prof-photo-input" accept="image/*" style="display:none" onchange="handleProfilePhoto(this)"/>
+    </div>
+    <div class="prof-name" id="prof-name-display">Guest</div>
+    <div class="prof-level" id="prof-level-display">B1</div>
+  </div>
+  <!-- Stats -->
+  <div class="prof-stats">
+    <div class="prof-stat"><div class="prof-stat-val" style="color:var(--pu)" id="prof-xp">0</div><div class="prof-stat-lbl">Total XP</div></div>
+    <div class="prof-stat"><div class="prof-stat-val" style="color:#F59E0B" id="prof-streak">0🔥</div><div class="prof-stat-lbl">Streak</div></div>
+    <div class="prof-stat"><div class="prof-stat-val" style="color:#22C55E" id="prof-words">0</div><div class="prof-stat-lbl">Words</div></div>
+  </div>
+  <!-- Avatar options -->
+  <div class="prof-section">
+    <div class="prof-sec-title">🎭 Choose Avatar</div>
+    <div class="prof-avatar-opts">
+      <div class="avatar-opt sel" onclick="setAvatar('🦊')">🦊</div>
+      <div class="avatar-opt" onclick="setAvatar('🐺')">🐺</div>
+      <div class="avatar-opt" onclick="setAvatar('🦁')">🦁</div>
+      <div class="avatar-opt" onclick="setAvatar('🐻')">🐻</div>
+      <div class="avatar-opt" onclick="setAvatar('🐼')">🐼</div>
+      <div class="avatar-opt" onclick="setAvatar('🦉')">🦉</div>
+      <div class="avatar-opt" onclick="setAvatar('🐉')">🐉</div>
+      <div class="avatar-opt" id="avatar-initial" onclick="setAvatarInitial()">A</div>
+    </div>
+  </div>
+  <!-- Progress ring -->
+  <div class="prof-section" style="text-align:center">
+    <div class="prof-sec-title" style="justify-content:center">📊 Overall Progress</div>
+    <div class="prog-ring">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="50" fill="none" stroke="#EDE9FE" stroke-width="10"/>
+        <circle id="prof-ring" cx="60" cy="60" r="50" fill="none" stroke="#6C3CE1" stroke-width="10" stroke-dasharray="314" stroke-dashoffset="314" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+      </svg>
+      <div><div class="prog-ring-txt" id="prof-acc">0%</div><div class="prog-ring-lbl">Accuracy</div></div>
+    </div>
+  </div>
+  <!-- Weak topics with redo -->
+  <div class="prof-section">
+    <div class="prof-sec-title">⚠️ Weak Topics — Tap to Redo</div>
+    <div id="prof-weak-list"><div class="empty-rev">Complete exercises to see weak topics!</div></div>
+  </div>
+  <!-- Strong topics -->
+  <div class="prof-section">
+    <div class="prof-sec-title">✅ Strong Topics</div>
+    <div id="prof-strong-list"><div class="empty-rev">Complete exercises to see strong topics!</div></div>
+  </div>
+  <!-- Settings -->
+  <div class="prof-section">
+    <div class="prof-sec-title">⚙️ Settings</div>
+    <div style="background:white;border:1.5px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)">
+      <div style="padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="goTo('levelselect')">
+        <span style="font-weight:700;font-size:14px">🎯 Change Level</span><span style="color:var(--muted)" id="prof-level-setting">B1 ›</span>
+      </div>
+      <div style="padding:14px 16px;cursor:pointer;color:#B91C1C;font-weight:700;font-size:14px" onclick="doLogout()">🚪 Log Out</div>
     </div>
   </div>
 </div>
 
 <!-- BOTTOM NAV -->
 <div id="bottom-nav">
-  <div class="nav-item active" id="nav-home" onclick="navTo('home')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div><div class="nav-dot"></div></div>
-  <div class="nav-item" id="nav-dictionary" onclick="navTo('dictionary')"><div class="nav-icon">🔍</div><div class="nav-label">Dictionary</div><div class="nav-dot"></div></div>
-  <div class="nav-item" id="nav-flashcard" onclick="navTo('flashcard')"><div class="nav-icon">🃏</div><div class="nav-label">Flashcards</div><div class="nav-dot"></div></div>
-  <div class="nav-item" id="nav-review" onclick="navTo('review')"><div class="nav-icon">📊</div><div class="nav-label">Review</div><div class="nav-dot"></div></div>
+  <div class="nav-item active" id="nav-home" onclick="navTo('home')">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 12L12 3L21 12V21H15V15H9V21H3V12Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+    <div class="nav-label">Home</div><div class="nav-dot"></div>
+  </div>
+  <div class="nav-item" id="nav-dictionary" onclick="navTo('dictionary')">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 19.5A2.5 2.5 0 016.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+    <div class="nav-label">Dictionary</div><div class="nav-dot"></div>
+  </div>
+  <div class="nav-item" id="nav-flashcard" onclick="navTo('flashcard')">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><path d="M2 10h20" stroke="currentColor" stroke-width="2"/></svg>
+    <div class="nav-label">Flashcards</div><div class="nav-dot"></div>
+  </div>
+  <div class="nav-item" id="nav-profile" onclick="navTo('profile')">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <div class="nav-label">Profile</div><div class="nav-dot"></div>
+  </div>
 </div>
 </div>
 <script>
@@ -652,7 +792,7 @@ body{font-family:'Nunito Sans',sans-serif;background:#2d1b69;color:var(--text);m
 const SB_URL='https://aojtozjudqtpxebfxfyy.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFvanRvemp1ZHF0cHhlYmZ4Znl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3MjA2MTAsImV4cCI6MjA4OTI5NjYxMH0.uYNP3eO4PoG5qqHnWrycuKa-UpkDWbbdpg3OWrlWrr8';
 const SB_AUTH=SB_URL+'/auth/v1';
-const NAV=['home','dictionary','flashcard','review'];
+const NAV=['home','dictionary','flashcard','profile'];
 
 // ── STATE ─────────────────────────────────────────────────────
 var user=null, userName='Held', level=localStorage.getItem('gh_level')||'A1';
@@ -661,6 +801,37 @@ var sprExam='goethe', schExam='goethe', topicBack='sprechen';
 var dictCache=[], reviewData=JSON.parse(localStorage.getItem('gh_review')||'{}'), currentQ=null;
 var sprTopicsCache={}, grammarCache=[], strategyCache={}, wotdCache=[];
 const QN=5;
+var totalXP=parseInt(localStorage.getItem('gk_xp')||'0');
+var streakDays=parseInt(localStorage.getItem('gk_streak')||'0');
+var lastLogin=localStorage.getItem('gk_last_login')||'';
+
+function addXP(amt){
+  totalXP+=amt;
+  localStorage.setItem('gk_xp',totalXP);
+  updateXPBar();
+}
+function updateXPBar(){
+  const xpPerLevel=1000;
+  const currentXP=totalXP%xpPerLevel;
+  const pct=Math.round((currentXP/xpPerLevel)*100);
+  const el=document.getElementById('xp-bar-fill');
+  const txt=document.getElementById('xp-bar-txt');
+  if(el)el.style.width=pct+'%';
+  if(txt)txt.textContent=currentXP+'/'+xpPerLevel+' XP';
+  // Update streak display
+  const sd=document.getElementById('streak-count');
+  if(sd)sd.textContent=streakDays+' Tage Streak!';
+}
+function checkStreak(){
+  const today=new Date().toDateString();
+  if(lastLogin===today)return;
+  const yesterday=new Date(Date.now()-86400000).toDateString();
+  if(lastLogin===yesterday){streakDays++;}
+  else if(lastLogin!==today){streakDays=1;}
+  lastLogin=today;
+  localStorage.setItem('gk_streak',streakDays);
+  localStorage.setItem('gk_last_login',today);
+}
 
 // ── HELPERS ───────────────────────────────────────────────────
 async function sbFetch(path){
@@ -698,13 +869,14 @@ function goTo(id){
   if(id==='home') loadHome();
   if(id==='sprechen'){document.getElementById('spr-lvl').textContent=level;loadTopics('sprechen');}
   if(id==='schreiben'){document.getElementById('sch-lvl').textContent=level;loadTopics('schreiben');}
+  if(id==='grammar') loadGrammarScreen();
 }
 function navTo(id){
   show(id);
   if(id==='home') loadHome();
   if(id==='dictionary') initDict();
-  if(id==='review') loadReview();
   if(id==='flashcard') initFlashcards();
+  if(id==='profile') loadProfile();
 }
 
 // ── AUTH ──────────────────────────────────────────────────────
@@ -806,8 +978,9 @@ function loadHome(){
   document.getElementById('home-greeting').textContent=h<12?'Guten Morgen ☀️':h<18?'Guten Tag 👋':'Guten Abend 🌙';
   document.getElementById('home-username').textContent=userName+', '+level;
   document.getElementById('home-level-badge').textContent=level;
+  checkStreak();
+  updateXPBar();
   loadMissionCounts();
-  loadGrammarList();
   loadWotdPreview();
 }
 async function loadMissionCounts(){
@@ -822,29 +995,35 @@ async function loadMissionCounts(){
 }
 
 // ── GRAMMAR ───────────────────────────────────────────────────
-async function loadGrammarList(){
-  document.getElementById('grammar-list').innerHTML='<div class="loading-box" style="height:120px"><div class="spinner"></div></div>';
+
+async function loadGrammarScreen(){
+  if(grammarCache.length){renderGrammarList();return;}
+  loading('grammar-list','Loading grammar...');
   try{
-    if(!grammarCache.length){
-      grammarCache=await sbFetch('/rest/v1/grammar?select=*&order=id');
-    }
-    const levels=['A1','A2','B1','B2'];
-    const idx=levels.indexOf(level);
-    const visible=grammarCache.filter(t=>levels.indexOf(t.level)<=idx);
-    const lc={'A1':'#DCFCE7','A2':'#DBEAFE','B1':'#FEF3C7','B2':'#FEE2E2'};
-    const lt={'A1':'#16A34A','A2':'#2563EB','B1':'#D97706','B2':'#DC2626'};
-    const ic=['📝','🔤','📖','✏️','🔀','⚙️','📚','🎯','💡','🔑','🌟','💎'];
-    document.getElementById('grammar-intro').textContent=visible.length+' grammar topics for '+level+' and below.';
-    document.getElementById('grammar-list').innerHTML=visible.map((t,i)=>
-      '<div class="grammar-item" onclick="showGrammarDetail('+t.id+')">'
-      +'<div class="grammar-item-icon">'+ic[i%ic.length]+'</div>'
-      +'<div class="grammar-item-body">'
-      +'<div class="grammar-item-title">'+t.topic+'<span class="lvl-badge" style="background:'+lc[t.level]+';color:'+lt[t.level]+'">'+t.level+'</span></div>'
-      +'<div class="grammar-item-sub">Exam: '+t.exam_pct+'% · Speaking: '+t.speaking_pct+'%</div>'
-      +'</div><div class="grammar-item-arrow">›</div></div>'
-    ).join('');
-  }catch(e){errBox('grammar-list','Could not load grammar. Check Supabase grammar table.');}
+    grammarCache=await sbFetch('/rest/v1/grammar?select=*&order=id');
+    renderGrammarList();
+  }catch(e){errBox('grammar-list','Could not load grammar.');}
 }
+function renderGrammarList(){
+  const levels=['A1','A2','B1','B2'];
+  const idx=levels.indexOf(level);
+  const visible=grammarCache.filter(t=>levels.indexOf(t.level)<=idx);
+  const lc={'A1':'#DCFCE7','A2':'#DBEAFE','B1':'#FEF3C7','B2':'#FEE2E2'};
+  const lt={'A1':'#16A34A','A2':'#2563EB','B1':'#D97706','B2':'#DC2626'};
+  const ic=['📝','🔤','📖','✏️','🔀','⚙️','📚','🎯','💡','🔑','🌟','💎'];
+  const intro=document.getElementById('grammar-intro-screen');
+  if(intro)intro.textContent=visible.length+' grammar topics for '+level+' and below.';
+  document.getElementById('grammar-list').innerHTML=visible.map((t,i)=>
+    '<div class="grammar-item" onclick="showGrammarDetail('+t.id+')">'
+    +'<div class="grammar-item-icon">'+ic[i%ic.length]+'</div>'
+    +'<div class="grammar-item-body">'
+    +'<div class="grammar-item-title">'+t.topic+'<span class="lvl-badge" style="background:'+lc[t.level]+';color:'+lt[t.level]+'">'+t.level+'</span></div>'
+    +'<div class="grammar-item-sub">Exam: '+t.exam_pct+'% · Speaking: '+t.speaking_pct+'%</div>'
+    +'</div><div class="grammar-item-arrow">›</div></div>'
+  ).join('');
+}
+
+async function loadGrammarList(){}
 
 async function showGrammarDetail(id){
   const t=grammarCache.find(x=>x.id===id);
@@ -1156,6 +1335,7 @@ function showResult(){
   document.getElementById('s-correct').textContent=correct+'/'+total;
   document.getElementById('s-acc').textContent=acc+'%';
   document.getElementById('s-xp').textContent='+'+xp+' XP';
+  addXP(50);
   document.getElementById('res-title').textContent=acc>=80?'Ausgezeichnet! 🏆':acc>=60?'Gut gemacht! 👍':'Weiter üben! 💪';
   document.getElementById('res-sub').textContent=correct+' correct out of '+total;
   show('result');
@@ -1258,17 +1438,18 @@ function setFcFilter(f){
   startFlashcards();
 }
 
-function startFlashcards(){
-  // Filter by type and shuffle
-  let cards = fcCache.filter(c=>fcFilter==='all'||c.type===fcFilter);
-  // Shuffle
+var fcRoundStart=0;
+function startFlashcards(fromIndex){
+  fromIndex=fromIndex||0;
+  let cards=fcCache.filter(c=>fcFilter==='all'||c.type===fcFilter);
   for(let i=cards.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[cards[i],cards[j]]=[cards[j],cards[i]];}
-  fcDeck=cards;
+  fcDeck=cards.slice(fromIndex,fromIndex+10);
+  fcRoundStart=fromIndex;
   fcIndex=0;fcKnown=0;fcLearning=0;fcSeen=0;fcFlipped=false;
   document.getElementById('fc-complete').style.display='none';
-  document.querySelector('.fc-scene').style.display='block';
-  document.getElementById('fc-actions').style.display='flex';
-  if(fcDeck.length) showFcCard();
+  const scene=document.querySelector('.fc-scene');if(scene)scene.style.display='block';
+  const acts=document.getElementById('fc-actions');if(acts)acts.style.display='flex';
+  if(fcDeck.length)showFcCard();
   else document.getElementById('fc-word').textContent='No cards for this filter!';
 }
 
@@ -1315,22 +1496,143 @@ function flipCard(){
 }
 
 function fcAnswer(known){
-  if(known){fcKnown++;}
-  else{fcLearning++;fcDeck.push(fcDeck[fcIndex]);}  // push back for review
+  if(known){
+    fcKnown++;
+    wordsLearned++;
+    localStorage.setItem('gk_words',wordsLearned);
+  }else{
+    fcLearning++;
+    fcDeck.push(fcDeck[fcIndex]);
+  }
   fcIndex++;
   setTimeout(()=>showFcCard(),200);
 }
 
 function showFcComplete(){
-  document.querySelector('.fc-scene').style.display='none';
-  document.getElementById('fc-actions').style.display='none';
+  const scene=document.querySelector('.fc-scene');if(scene)scene.style.display='none';
+  const acts=document.getElementById('fc-actions');if(acts)acts.style.display='none';
   document.getElementById('fc-complete').style.display='block';
   const total=fcKnown+fcLearning;
   const pct=total>0?Math.round((fcKnown/total)*100):0;
-  document.getElementById('fc-complete-sub').textContent=
-    '✅ Known: '+fcKnown+' · 🔄 Learning: '+fcLearning+' · '+pct+'% mastered!';
+  document.getElementById('fc-complete-sub').textContent='✅ Known: '+fcKnown+' · 🔄 Learning: '+fcLearning+' · '+pct+'% mastered!';
   document.getElementById('fc-prog-fill').style.width='100%';
-  document.getElementById('fc-prog-txt').textContent='Done!';
+  document.getElementById('fc-prog-txt').textContent='Round done!';
+  // Add XP
+  addXP(50);
+  // Check if more cards available
+  const totalCards=fcCache.filter(c=>fcFilter==='all'||c.type===fcFilter).length;
+  const nextStart=fcRoundStart+10;
+  const hasMore=nextStart<totalCards;
+  document.getElementById('fc-next-btn').style.display=hasMore?'block':'none';
+  document.getElementById('fc-next-btn').onclick=()=>startFlashcards(nextStart);
+}
+
+
+// ── PROFILE ────────────────────────────────────────────────
+var wordsLearned=parseInt(localStorage.getItem('gk_words')||'0');
+var selectedAvatar=localStorage.getItem('gk_avatar')||'🦊';
+
+function loadProfile(){
+  // Stats
+  document.getElementById('prof-name-display').textContent=userName;
+  document.getElementById('prof-level-display').textContent=level;
+  document.getElementById('prof-level-setting').textContent=level+' ›';
+  document.getElementById('prof-xp').textContent=totalXP;
+  document.getElementById('prof-streak').textContent=streakDays+'🔥';
+  document.getElementById('prof-words').textContent=wordsLearned;
+  // Avatar
+  const avatarEl=document.getElementById('prof-avatar-display');
+  if(avatarEl)avatarEl.textContent=selectedAvatar;
+  // Initial letter option
+  const initEl=document.getElementById('avatar-initial');
+  if(initEl)initEl.textContent=userName?userName[0].toUpperCase():'G';
+  // Progress ring
+  const entries=Object.entries(reviewData);
+  const tot=entries.reduce((s,[,d])=>s+d.t,0);
+  const cor=entries.reduce((s,[,d])=>s+d.c,0);
+  const acc=tot>0?Math.round((cor/tot)*100):0;
+  document.getElementById('prof-acc').textContent=acc+'%';
+  const ring=document.getElementById('prof-ring');
+  if(ring)ring.style.strokeDashoffset=314-(314*(acc/100));
+  // Weak/strong
+  const weak=entries.filter(([,d])=>d.t>0&&(d.c/d.t)<0.6).sort((a,b)=>(a[1].c/a[1].t)-(b[1].c/b[1].t));
+  const strong=entries.filter(([,d])=>d.t>0&&(d.c/d.t)>=0.8).sort((a,b)=>(b[1].c/b[1].t)-(a[1].c/a[1].t));
+  const dots=(type)=>[1,2,3].map(()=>'<div class="str-dot '+type+'"></div>').join('');
+  document.getElementById('prof-weak-list').innerHTML=weak.length
+    ?weak.slice(0,8).map(([topic,d])=>{
+      const pct=Math.round((d.c/d.t)*100);
+      return '<div class="rev-card"><div class="rev-card-top"><div class="rev-card-title">'+topic+'</div><div class="str-dots">'+dots('bad')+'</div></div>'
+        +'<div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px">'
+        +'<div class="rev-card-sub">'+d.c+'/'+d.t+' correct ('+pct+'%)</div>'
+        +'<button class="redo-btn" onclick="redoTopic(''+topic+'')">↺ Redo</button>'
+        +'</div></div>';
+    }).join('')
+    :'<div class="empty-rev">🎉 No weak topics! Keep practicing.</div>';
+  document.getElementById('prof-strong-list').innerHTML=strong.length
+    ?strong.slice(0,5).map(([topic,d])=>{
+      const pct=Math.round((d.c/d.t)*100);
+      return '<div class="rev-card"><div class="rev-card-top"><div class="rev-card-title">'+topic+'</div><div class="str-dots">'+dots('ok')+'</div></div><div class="rev-card-sub">'+d.c+'/'+d.t+' correct ('+pct+'%)</div></div>';
+    }).join('')
+    :'<div class="empty-rev">Complete exercises to see strong topics!</div>';
+}
+
+function setAvatar(emoji){
+  selectedAvatar=emoji;
+  localStorage.setItem('gk_avatar',emoji);
+  const el=document.getElementById('prof-avatar-display');
+  if(el)el.textContent=emoji;
+  const homeAvatar=document.getElementById('home-avatar-emoji');
+  if(homeAvatar)homeAvatar.textContent=emoji;
+  document.querySelectorAll('.avatar-opt').forEach(o=>o.classList.remove('sel'));
+  event.target.classList.add('sel');
+}
+function setAvatarInitial(){
+  const initial=userName?userName[0].toUpperCase():'G';
+  selectedAvatar=initial;
+  localStorage.setItem('gk_avatar',initial);
+  const el=document.getElementById('prof-avatar-display');
+  if(el)el.textContent=initial;
+  document.querySelectorAll('.avatar-opt').forEach(o=>o.classList.remove('sel'));
+  document.getElementById('avatar-initial').classList.add('sel');
+}
+function handleProfilePhoto(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const el=document.getElementById('prof-avatar-display');
+    if(el){
+      el.innerHTML='<img src="'+e.target.result+'" style="width:100%;height:100%;border-radius:50%;object-fit:cover">';
+    }
+    localStorage.setItem('gk_photo',e.target.result);
+  };
+  reader.readAsDataURL(file);
+}
+
+async function redoTopic(topic){
+  // Find questions for this topic and start exercise
+  qType='sprachbausteine';qIdx=0;correct=0;answered=false;
+  document.getElementById('ex-title').textContent='Redo: '+topic;
+  document.getElementById('mascot-say').textContent="Let's fix this! 💪";
+  show('exercise');
+  loading('ex-content','Loading questions...');
+  try{
+    let data=await sbFetch('/rest/v1/sprachbausteine?select=*&topic=eq.'+encodeURIComponent(topic)+'&limit=10');
+    if(!data.length) data=await sbFetch('/rest/v1/true_or_false?select=*&topic=eq.'+encodeURIComponent(topic)+'&limit=10');
+    if(!data.length){
+      // fallback: load any questions for level
+      data=await sbFetch('/rest/v1/sprachbausteine?select=*&level=eq.'+level+'&limit=10');
+      qType='sprachbausteine';
+    }
+    questions=data.sort(()=>Math.random()-0.5).slice(0,QN);
+    buildDots();showQ();
+  }catch(e){errBox('ex-content','Could not load questions for this topic.');}
+}
+
+function doLogout(){
+  localStorage.removeItem('gh_token');
+  localStorage.removeItem('gh_level');
+  user=null;userName='Guest';level='A1';
+  show('login');
 }
 
 // ── INIT ──────────────────────────────────────────────────────
