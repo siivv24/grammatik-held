@@ -1353,7 +1353,7 @@ async function showWotd(){
   loading('wotd-content','Loading word...');
   try{
     if(!wotdCache.length) wotdCache=await sbFetch('/rest/v1/wotd?select=*&order=id');
-    renderWotd(wotdCache[new Date().getDate()%wotdCache.length]);
+    const wotdIdx=parseInt(localStorage.getItem('gk_wotd_idx')||'0'); renderWotd(wotdCache[wotdIdx%wotdCache.length]);
   }catch(e){errBox('wotd-content','Could not load word of the day.');}
 }
 function renderWotd(w){
@@ -1369,7 +1369,9 @@ function renderWotd(w){
 }
 function randomWotd(){
   if(!wotdCache.length)return;
-  renderWotd(wotdCache[Math.floor(Math.random()*wotdCache.length)]);
+  const next=(parseInt(localStorage.getItem('gk_wotd_idx')||'0')+1)%wotdCache.length;
+  localStorage.setItem('gk_wotd_idx',next);
+  renderWotd(wotdCache[next]);
 }
 
 // ── EXERCISE ──────────────────────────────────────────────────
@@ -1581,7 +1583,7 @@ function startFlashcards(fromIndex){
   fromIndex=fromIndex||0;
   let cards=fcCache.filter(c=>fcFilter==='all'||c.type===fcFilter);
   for(let i=cards.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[cards[i],cards[j]]=[cards[j],cards[i]];}
-  fcDeck=cards.slice(fromIndex,fromIndex+10);
+  fcDeck=cards.slice(fromIndex,fromIndex+50);
   fcRoundStart=fromIndex;
   fcIndex=0;fcKnown=0;fcLearning=0;fcSeen=0;fcFlipped=false;
   document.getElementById('fc-complete').style.display='none';
