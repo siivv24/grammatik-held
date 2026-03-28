@@ -2095,7 +2095,7 @@ function answerChQ(chosen){
       el.classList.add('chq-correct');
       // Show rationale for correct
       if(rat){
-        rat.textContent=(isRight?'✓ That's right! ':'')+getRationale(q,i,opts);
+       rat.textContent = (isRight ? `✓ That's right! ` : '') + getRationale(q, i, opts);
       }
     } else if(i===chosen&&!isRight){
       el.classList.add('chq-wrong-ans');
